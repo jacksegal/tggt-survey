@@ -7,6 +7,3 @@ runtime_config:
 handlers:
 - url: /
   script: index.php
-
-beta_settings:
-  cloud_sql_instances:

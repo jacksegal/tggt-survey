@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Great Get Together - Survey</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <![endif]-->
+</head>
+
+<body>
+
+
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+<script>
+
+    dataString = {
+        27: 'segal_jack@yahoo.com',
+        28: 'John',
+        29: 'Doe',
+        33: 'N16 0RS',
+        41: 'Yes; I want to take part in The Great Get Together',
+        42: 'Throw a street party',
+        43: 'Yes; free text field',
+        38: 'Yes',
+        39: 'Have fun'
+    };
+    $.ajax({
+        type: "POST",
+        data: {data: dataString},
+        url: "http://localhost:8000/api/ijqw7dx/signup/3",
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+        },
+    });
+</script>
+
+</body>
+</html>

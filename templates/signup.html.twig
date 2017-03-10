@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+
+    {# [START items] #}
+    {% for item in items %}
+
+        <ul>
+            <li>Name: {{ item.name }}</li>
+            <li>Age:{{ item.age }} </li>
+        </ul>
+
+    {% else %}
+        <p>No items found</p>
+    {% endfor %}
+    {# [END items] #}
+
+
+{% endblock %}

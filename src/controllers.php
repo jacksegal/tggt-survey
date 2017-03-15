@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Bsd\FormBuilder\BsdApi;
 use Google\Cloud\Datastore\DatastoreClient;
 
-$app->get('/', function (Request $request) use ($app) {
+$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/', function (Request $request) use ($app) {
 
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
@@ -13,7 +13,15 @@ $app->get('/', function (Request $request) use ($app) {
     return $twig->render('base.html.twig', array());
 });
 
-$app->get('/embed', function (Request $request) use ($app) {
+$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/js', function (Request $request) use ($app) {
+
+    /** @var Twig_Environment $twig */
+    $twig = $app['twig'];
+
+    return $twig->render('js.html.twig', array());
+});
+
+$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed', function (Request $request) use ($app) {
 
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
@@ -21,7 +29,7 @@ $app->get('/embed', function (Request $request) use ($app) {
     return $twig->render('sidebar.html.twig', array());
 });
 
-$app->get('/embed/h', function (Request $request) use ($app) {
+$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed/h', function (Request $request) use ($app) {
 
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
@@ -50,12 +58,19 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
      */
 
     $signupFields = $request->request->all();
+    $unsub = false;
 
     foreach ($signupFields as $key => $value) {
-        $signupData[] = [
-            "id" => $key,
-            "value" => $value,
-        ];
+
+        if ($key == 'unsub') {
+            $unsub = $value;
+        } else {
+            $signupData[] = [
+                "id" => $key,
+                "value" => $value,
+            ];
+        }
+
     }
 
 
@@ -67,6 +82,12 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
 
     if ($signupResponse['http'] == 200) {
 
+        if ($unsub) {
+            // Let the signup get processed before sending unsub
+            sleep(1);
+            $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
+            return $app->json($unsubResponse, 200);
+        }
 
     } else {
         // Instantiates a client
@@ -78,6 +99,7 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
         $failure = $datastore->entity('Failed', [
             'form' => $form,
             'data' => $signupData,
+            'unsub' => $unsub ? 'true' : 'false',
             'reponse' => $signupResponse,
             'date' => date('Y-m-d H:i:s'),
         ]);
@@ -111,4 +133,19 @@ $app->get('/failures', function (Request $request) use ($app) {
     }
 
     return $app->json($failures, 200);
+});
+
+$app->get('/unsub', function (Request $request) use ($app) {
+
+    $config = [
+        "urlRoot" => $app['config']['bsd_url_root'],
+        "appSecret" => $app['config']['bsd_app_secret'],
+        "appId" => $app['config']['bsd_app_id'],
+    ];
+
+    $bsdApi = new \Bsd\FormBuilder\BsdApi($config);
+
+    $unsubResponse = $bsdApi->email_unsubscribe('segal_jack@yahoo.com', 'PledgeCheckBox');
+
+    return $app->json($unsubResponse, 200);
 });

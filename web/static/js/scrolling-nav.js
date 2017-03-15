@@ -18,11 +18,15 @@ $(function () {
         var target = $(this).children('button[type="submit"]').attr('data-href');
         $(target).removeClass('hidden');
 
+        var previousSlide = $(this).closest("section.slide");
+
         /* move to next slide */
         var $anchor = $(this).children('button[type="submit"]');
         $('html, body').stop().animate({
             scrollTop: $($anchor.attr('data-href')).offset().top
-        }, 1500, 'easeInOutExpo');
+        }, 1500, 'easeInOutExpo', function () {
+            $(previousSlide).addClass('hidden');
+        });
 
         /* disable the click */
         event.preventDefault();

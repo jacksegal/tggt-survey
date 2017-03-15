@@ -16,6 +16,15 @@ class BsdApi
         $this->appId = $config['appId'];
     }
 
+    public function email_unsubscribe($email, $reason)
+    {
+        $apiTs = time();
+        $url = '/page/api/cons/email_unsubscribe';
+        $getParams = 'api_ver=2&api_id=' . $this->appId . '&api_ts=' . $apiTs . '&email=' . $email . '&reason=' . $reason;
+
+        return ($this->call_bsd($apiTs, $url, $getParams, false));
+    }
+
     public function list_form_fields($signupFormId)
     {
         $apiTs = time();

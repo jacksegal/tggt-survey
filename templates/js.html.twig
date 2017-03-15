@@ -19,20 +19,15 @@
 <script>
 
     dataString = {
-        27: 'segal_jack@yahoo.com',
-        28: 'John',
-        29: 'Doe',
-        33: 'N16 0RS',
-        41: 'Yes; I want to take part in The Great Get Together',
-        42: 'Throw a street party',
-        43: 'Yes; free text field',
-        38: 'Yes',
-        39: 'Have fun'
+        87: 'segal_jack_unsub@yahoo.com',
+        89: 'John',
+        96: 'N16 0RS',
+        'unsub': 'segal_jack_unsub@yahoo.com'
     };
     $.ajax({
         type: "POST",
         data: {data: dataString},
-        url: "http://localhost:8000/api/ijqw7dx/signup/3",
+        url: "http://localhost:8000/api/ijqw7dx/signup/7",
         dataType: "json",
         success: function (response) {
             console.log(response);

@@ -3,39 +3,36 @@
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Bsd\FormBuilder\BsdApi;
+use GreatGetTogether\Slack;
 use Google\Cloud\Datastore\DatastoreClient;
 
-$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/', function (Request $request) use ($app) {
+/*$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/', function (Request $request) use ($app) {
 
-    /** @var Twig_Environment $twig */
     $twig = $app['twig'];
 
     return $twig->render('base.html.twig', array());
-});
+});*/
 
 $app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/js', function (Request $request) use ($app) {
 
-    /** @var Twig_Environment $twig */
     $twig = $app['twig'];
 
     return $twig->render('js.html.twig', array());
 });
 
-$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed', function (Request $request) use ($app) {
+/*$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed', function (Request $request) use ($app) {
 
-    /** @var Twig_Environment $twig */
     $twig = $app['twig'];
 
     return $twig->render('sidebar.html.twig', array());
-});
+});*/
 
-$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed/h', function (Request $request) use ($app) {
+/*$app->get('/qoiqwdqwdhqwiodhqoiwdioqwd/embed/h', function (Request $request) use ($app) {
 
-    /** @var Twig_Environment $twig */
     $twig = $app['twig'];
 
     return $twig->render('horizontal.html.twig', array());
-});
+});*/
 
 $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use ($app) {
 
@@ -86,6 +83,28 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
             // Let the signup get processed before sending unsub
             sleep(1);
             $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
+
+            if ($unsubResponse['http'] == 200) {
+
+            } else {
+                // Instantiates a client
+                $datastore = new DatastoreClient([
+                    'projectId' => $app['config']['google_project_id']
+                ]);
+
+                // Add New Records
+                $failure = $datastore->entity('Failed', [
+                    'form' => $form,
+                    'data' => $unsub,
+                    'unsub' => $unsub ? 'true' : 'false',
+                    'reponse' => $unsubResponse,
+                    'date' => date('Y-m-d H:i:s'),
+                ]);
+                $datastore->insert($failure);
+                $slack = new \GreatGetTogether\Slack();
+                $slack->failedUnsub($form, json_encode($unsub), json_encode($unsubResponse));
+            }
+
             return $app->json($unsubResponse, 200);
         }
 
@@ -104,6 +123,9 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
             'date' => date('Y-m-d H:i:s'),
         ]);
         $datastore->insert($failure);
+
+        $slack = new \GreatGetTogether\Slack();
+        $slack->failedSignup($form, json_encode($signupData), json_encode($signupResponse));
     }
 
     return $app->json($signupResponse, 200);
@@ -135,7 +157,7 @@ $app->get('/failures', function (Request $request) use ($app) {
     return $app->json($failures, 200);
 });
 
-$app->get('/unsub', function (Request $request) use ($app) {
+/*$app->get('/unsub', function (Request $request) use ($app) {
 
     $config = [
         "urlRoot" => $app['config']['bsd_url_root'],
@@ -148,4 +170,12 @@ $app->get('/unsub', function (Request $request) use ($app) {
     $unsubResponse = $bsdApi->email_unsubscribe('segal_jack@yahoo.com', 'PledgeCheckBox');
 
     return $app->json($unsubResponse, 200);
-});
+});*/
+
+/*$app->get('/slack', function (Request $request) use ($app) {
+
+    $slack = new \GreatGetTogether\Slack();
+    $response = $slack->failedSignup("{example data}");
+
+    return $app->json($response, 200);
+});*/

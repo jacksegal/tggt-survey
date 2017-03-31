@@ -18,15 +18,14 @@
 
 <script>
 
-    dataString = {
-        87: 'segal_jack_unsub@yahoo.com',
-        89: 'John',
-        96: 'N16 0RS',
-        'unsub': 'segal_jack_unsub@yahoo.com'
-    };
     $.ajax({
         type: "POST",
-        data: {data: dataString},
+        data: {
+            87: 'segal_jack_unsub@yahoo.com',
+            89: 'John',
+            96: 'N16 0RS',
+            'unsub': 'segal_jack_unsub@yahoo.com'
+        },
         url: "http://localhost:8000/api/ijqw7dx/signup/7",
         dataType: "json",
         success: function (response) {

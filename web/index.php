@@ -19,6 +19,7 @@ header("Access-Control-Allow-Origin: *");
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/BsdApi.php';
+require_once __DIR__ . '/../src/Slack.php';
 
 /** @var Silex\Application $app */
 $app = require __DIR__ . '/../src/app.php';

@@ -7,3 +7,6 @@ runtime_config:
 handlers:
 - url: /
   script: index.php
+
+automatic_scaling:
+  min_num_instances: 1

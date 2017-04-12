@@ -81,7 +81,7 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
 
         if ($unsub) {
             // Let the signup get processed before sending unsub
-            sleep(1);
+            sleep(2);
             $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
 
             if ($unsubResponse['http'] == 200) {

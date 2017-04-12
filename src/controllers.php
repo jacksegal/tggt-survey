@@ -87,22 +87,47 @@ $app->post('/api/ijqw7dx/signup/{form}', function (Request $request, $form) use 
             if ($unsubResponse['http'] == 200) {
 
             } else {
-                // Instantiates a client
-                $datastore = new DatastoreClient([
-                    'projectId' => $app['config']['google_project_id']
-                ]);
 
-                // Add New Records
-                $failure = $datastore->entity('Failed', [
-                    'form' => $form,
-                    'data' => $unsub,
-                    'unsub' => $unsub ? 'true' : 'false',
-                    'reponse' => $unsubResponse,
-                    'date' => date('Y-m-d H:i:s'),
-                ]);
-                $datastore->insert($failure);
-                $slack = new \GreatGetTogether\Slack();
-                $slack->failedUnsub($form, json_encode($unsub), json_encode($unsubResponse));
+                sleep(5);
+                $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
+
+                if ($unsubResponse['http'] == 200) {
+
+                } else {
+
+                    sleep(10);
+                    $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
+
+                    if ($unsubResponse['http'] == 200) {
+
+                    } else {
+
+                        sleep(30);
+                        $unsubResponse = $bsdApi->email_unsubscribe($unsub, 'PledgeCheckBox');
+
+                        if ($unsubResponse['http'] == 200) {
+
+                        } else {
+
+                            // Instantiates a client
+                            $datastore = new DatastoreClient([
+                                'projectId' => $app['config']['google_project_id']
+                            ]);
+
+                            // Add New Records
+                            $failure = $datastore->entity('Failed', [
+                                'form' => $form,
+                                'data' => $unsub,
+                                'unsub' => $unsub ? 'true' : 'false',
+                                'reponse' => $unsubResponse,
+                                'date' => date('Y-m-d H:i:s'),
+                            ]);
+                            $datastore->insert($failure);
+                            $slack = new \GreatGetTogether\Slack();
+                            $slack->failedUnsub($form, json_encode($unsub), json_encode($unsubResponse));
+                        }
+                    }
+                }
             }
 
             return $app->json($unsubResponse, 200);
